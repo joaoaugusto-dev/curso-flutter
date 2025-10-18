@@ -46,11 +46,19 @@ class HomePage extends StatelessWidget {
               //backgroundColor: Colors.white,
             ),
           ),
-          const Text(
-            "0",
-            style: TextStyle(
-              fontSize: 100,
-              color: Colors.white,
+          Padding(
+            padding: EdgeInsets.fromLTRB(
+              0,
+              32,
+              0,
+              32,
+            ),
+            child: Text(
+              "0",
+              style: TextStyle(
+                fontSize: 100,
+                color: Colors.white,
+              ),
             ),
           ),
           Row(
@@ -59,6 +67,16 @@ class HomePage extends StatelessWidget {
             children: [
               TextButton(
                 onPressed: decrement,
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  fixedSize: const Size(100, 100),
+                  foregroundColor: Colors
+                      .black, //primary foi trocado pelo foregroundColor
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(16),
+                  ),
+                ),
                 child: Text(
                   "Saiu",
                   style: TextStyle(
@@ -67,10 +85,21 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
               ),
+              const SizedBox(width: 32),
               TextButton(
-                onPressed: increment,
+                onPressed: decrement,
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  fixedSize: const Size(100, 100),
+                  foregroundColor: Colors
+                      .black, //primary foi trocado pelo foregroundColor
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(16),
+                  ),
+                ),
                 child: Text(
-                  "Entrou",
+                  "Saiu",
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 16,
