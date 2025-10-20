@@ -28,7 +28,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int contador = 0;
 
-  void decrement() {
+  /*void decrement() {
     if (contador > 0) {
       setState(() {
         contador--;
@@ -61,7 +61,25 @@ class _HomePageState extends State<HomePage> {
     } else {
       return Color.fromRGBO(255, 87, 104, 1);
     }
+  }*/
+
+  void decrement() {
+    setState(() {
+      contador--;
+    });
+    print(contador);
   }
+
+  void increment() {
+    //toda vez que isso acontecer, ele redefine o estado, "atualiza"
+    setState(() {
+      contador++;
+    });
+    print(contador);
+  }
+
+  bool get isEmpty => contador == 0;
+  bool get isFull => contador == 20;
 
   @override
   Widget build(BuildContext context) {
@@ -103,10 +121,19 @@ class _HomePageState extends State<HomePage> {
                   MainAxisAlignment.center,
               children: [
                 Text(
-                  estadoLotacaoString(),
+                  isFull
+                      ? "Lotação Completa!"
+                      : "Pode entrar!",
                   style: TextStyle(
                     fontSize: 30,
-                    color: estadoLotacaoColor(),
+                    color: isFull
+                        ? Color.fromRGBO(
+                            255,
+                            87,
+                            104,
+                            1,
+                          )
+                        : Colors.white,
                     fontWeight: FontWeight.w700,
                     //letterSpacing: 1,
                     //backgroundColor: Colors.white,
@@ -132,10 +159,18 @@ class _HomePageState extends State<HomePage> {
                       MainAxisAlignment.center,
                   children: [
                     TextButton(
-                      onPressed: decrement,
+                      onPressed: isEmpty
+                          ? null
+                          : decrement,
                       style: TextButton.styleFrom(
-                        backgroundColor:
-                            Colors.white,
+                        backgroundColor: isEmpty
+                            ? const Color.fromARGB(
+                                130,
+                                255,
+                                255,
+                                255,
+                              )
+                            : Colors.white,
                         fixedSize: const Size(
                           100,
                           100,
@@ -159,10 +194,18 @@ class _HomePageState extends State<HomePage> {
                     ),
                     const SizedBox(width: 32),
                     TextButton(
-                      onPressed: increment,
+                      onPressed: isFull
+                          ? null
+                          : increment,
                       style: TextButton.styleFrom(
-                        backgroundColor:
-                            Colors.white,
+                        backgroundColor: isFull
+                            ? const Color.fromARGB(
+                                130,
+                                255,
+                                255,
+                                255,
+                              )
+                            : Colors.white,
                         fixedSize: const Size(
                           100,
                           100,
