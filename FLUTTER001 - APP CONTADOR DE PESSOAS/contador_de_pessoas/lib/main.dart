@@ -11,21 +11,56 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: const HomePage(),
+      home: HomePage(),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class HomePage extends StatefulWidget {
+  HomePage({super.key});
+
+  @override
+  State<HomePage> createState() =>
+      _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int contador = 0;
 
   void decrement() {
-    print("Decrement");
+    if (contador > 0) {
+      setState(() {
+        contador--;
+      });
+    }
+    print(contador);
   }
 
   void increment() {
-    print("Increment");
+    //toda vez que isso acontecer, ele redefine o estado, "atualiza"
+    if (contador < 20) {
+      setState(() {
+        contador++;
+      });
+    }
+    print(contador);
+  }
+
+  String estadoLotacaoString() {
+    if (contador < 20) {
+      return "Pode entrar!";
+    } else {
+      return "Lotação completa!";
+    }
+  }
+
+  Color estadoLotacaoColor() {
+    if (contador < 20) {
+      return Colors.white;
+    } else {
+      return Color.fromRGBO(255, 87, 104, 1);
+    }
   }
 
   @override
@@ -67,11 +102,11 @@ class HomePage extends StatelessWidget {
               mainAxisAlignment:
                   MainAxisAlignment.center,
               children: [
-                const Text(
-                  "Pode entrar!",
+                Text(
+                  estadoLotacaoString(),
                   style: TextStyle(
                     fontSize: 30,
-                    color: Colors.white,
+                    color: estadoLotacaoColor(),
                     fontWeight: FontWeight.w700,
                     //letterSpacing: 1,
                     //backgroundColor: Colors.white,
@@ -85,8 +120,8 @@ class HomePage extends StatelessWidget {
                     32,
                   ),
                   child: Text(
-                    "0",
-                    style: TextStyle(
+                    contador.toString(),
+                    style: const TextStyle(
                       fontSize: 100,
                       color: Colors.white,
                     ),
