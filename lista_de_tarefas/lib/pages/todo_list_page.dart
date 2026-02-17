@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class TodoListPage extends StatelessWidget {
-  const TodoListPage({super.key});
+  TodoListPage({super.key});
+
+  final TextEditingController emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -9,25 +11,35 @@ class TodoListPage extends StatelessWidget {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: TextField(
-            decoration: InputDecoration(
-              labelText: 'E-mail:',
-              hintText: 'exemplo@exemplo.com',
-              //border: InputBorder.none,
-              errorText: /*'Campo obrigatório!'*/ null,
-              prefixText: 'R\$ ',
-              suffixText: 'cm',
-            ),
-            //obscureText: true,
-            keyboardType: TextInputType.emailAddress,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight(700),
-              color: Colors.purple,
-            ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                onChanged: onChanged,
+                onSubmitted: onSubmitted,
+                controller: emailController,
+                decoration: InputDecoration(labelText: "E-mail:"),
+              ),
+              ElevatedButton(onPressed: login, child: Text("Entrar")),
+            ],
           ),
         ),
       ),
     );
+  }
+
+  void onChanged(String text) {
+    //print(text);
+  }
+
+  void onSubmitted(String text) {
+    print(text);
+  }
+
+  void login() {
+    String text = emailController.text;
+    print(text);
+    //emailController.clear();
+    //emailController.text = "Daniel";
   }
 }
