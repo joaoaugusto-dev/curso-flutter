@@ -78,7 +78,7 @@ class _TodoListPageState extends State<TodoListPage> {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: showDeleteTodosConfirmationDialog,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xff00d7f3),
                         padding: const EdgeInsets.all(12),
@@ -105,8 +105,6 @@ class _TodoListPageState extends State<TodoListPage> {
     setState(() {
       todos.remove(todo);
     });
-
-    ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
@@ -114,6 +112,7 @@ class _TodoListPageState extends State<TodoListPage> {
           style: TextStyle(color: Color(0xff060708)),
         ),
         backgroundColor: Colors.white,
+        duration: Duration(seconds: 2),
         action: SnackBarAction(
           label: "Desfazer",
           onPressed: () {
@@ -123,8 +122,40 @@ class _TodoListPageState extends State<TodoListPage> {
           },
           textColor: Color(0xff00d7f3),
         ),
-        duration: const Duration(seconds: 5),
       ),
     );
+  }
+
+  void showDeleteTodosConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Limpar tudo?"),
+        content: Text("Você tem certeza que deseja apagar todas as tarefas?"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            style: TextButton.styleFrom(foregroundColor: Color(0xff00d7f3)),
+            child: Text("Cancelar"),
+          ),
+          TextButton(
+            onPressed: () {
+              deleteAllTodos();
+              Navigator.of(context).pop();
+            },
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: Text("Limpar Tudo"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void deleteAllTodos() {
+    setState(() {
+      todos.clear();
+    });
   }
 }
