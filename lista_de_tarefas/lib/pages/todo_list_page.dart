@@ -3,7 +3,7 @@ import 'package:lista_de_tarefas/models/todo.dart';
 import 'package:lista_de_tarefas/widgets/todo_list_item.dart';
 
 class TodoListPage extends StatefulWidget {
-  TodoListPage({super.key});
+  const TodoListPage({super.key});
 
   @override
   State<TodoListPage> createState() => _TodoListPageState();
@@ -13,6 +13,7 @@ class _TodoListPageState extends State<TodoListPage> {
   List<Todo> todos = [];
   Todo? deletedTodo;
   int? deletedTodoPos;
+  List<Todo> allDeletedTodos = [];
 
   final TextEditingController todoController = TextEditingController();
 
@@ -154,8 +155,29 @@ class _TodoListPageState extends State<TodoListPage> {
   }
 
   void deleteAllTodos() {
+    allDeletedTodos = List.from(todos);
     setState(() {
       todos.clear();
     });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "Todas as tarefas foram removidas com sucesso!",
+          style: TextStyle(color: Color(0xff060708)),
+        ),
+        backgroundColor: Colors.white,
+        duration: Duration(seconds: 2),
+        action: SnackBarAction(
+          label: "Desfazer",
+          onPressed: () {
+            setState(() {
+              todos = allDeletedTodos;
+              allDeletedTodos.clear;
+            });
+          },
+          textColor: Color(0xff00d7f3),
+        ),
+      ),
+    );
   }
 }
