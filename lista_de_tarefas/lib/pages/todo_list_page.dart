@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lista_de_tarefas/models/todo.dart';
+import 'package:lista_de_tarefas/repositories/todo_repository.dart';
 import 'package:lista_de_tarefas/widgets/todo_list_item.dart';
 
 class TodoListPage extends StatefulWidget {
@@ -16,6 +17,18 @@ class _TodoListPageState extends State<TodoListPage> {
   List<Todo> allDeletedTodos = [];
 
   final TextEditingController todoController = TextEditingController();
+  final TodoRepository todoRepository = TodoRepository();
+
+  @override
+  void initState() {
+    super.initState();
+
+    todoRepository.getTodoList().then((value) {
+      setState(() {
+        todos = value;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,20 +50,15 @@ class _TodoListPageState extends State<TodoListPage> {
                           labelText: "Adicione uma tarefa",
                           hintText: "Ex. Estudar Flutter",
                         ),
+                        onSubmitted: (context) {
+                          sendTodoInfo();
+                        },
                       ),
                     ),
                     SizedBox(width: 8),
                     ElevatedButton(
                       onPressed: () {
-                        String text = todoController.text;
-                        setState(() {
-                          Todo newTodo = Todo(
-                            title: text,
-                            dateTime: DateTime.now(),
-                          );
-                          todos.add(newTodo);
-                        });
-                        todoController.clear();
+                        sendTodoInfo();
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xff00d7f3),
@@ -106,25 +114,33 @@ class _TodoListPageState extends State<TodoListPage> {
     setState(() {
       todos.remove(todo);
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          "Tarefa ${todo.title} foi removida com sucesso!",
-          style: TextStyle(color: Color(0xff060708)),
-        ),
-        backgroundColor: Colors.white,
-        duration: Duration(seconds: 2),
-        action: SnackBarAction(
-          label: "Desfazer",
-          onPressed: () {
-            setState(() {
-              todos.insert(deletedTodoPos!, deletedTodo!);
-            });
-          },
-          textColor: Color(0xff00d7f3),
-        ),
+    todoRepository.saveTodoList(todos);
+
+    ScaffoldMessenger.of(context).clearSnackBars();
+    final snack = SnackBar(
+      content: Text(
+        "Tarefa ${todo.title} foi removida com sucesso!",
+        style: TextStyle(color: Color(0xff060708)),
+      ),
+      backgroundColor: Colors.white,
+      action: SnackBarAction(
+        label: "Desfazer",
+        onPressed: () {
+          setState(() {
+            todos.insert(deletedTodoPos!, deletedTodo!);
+            todoRepository.saveTodoList(todos);
+          });
+        },
+        textColor: Color(0xff00d7f3),
       ),
     );
+
+    final controller = ScaffoldMessenger.of(context).showSnackBar(snack);
+    Future.delayed(Duration(seconds: 5), () {
+      controller.close();
+      deletedTodo = null;
+      deletedTodoPos = null;
+    });
   }
 
   void showDeleteTodosConfirmationDialog() {
@@ -159,25 +175,43 @@ class _TodoListPageState extends State<TodoListPage> {
     setState(() {
       todos.clear();
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          "Todas as tarefas foram removidas com sucesso!",
-          style: TextStyle(color: Color(0xff060708)),
-        ),
-        backgroundColor: Colors.white,
-        duration: Duration(seconds: 2),
-        action: SnackBarAction(
-          label: "Desfazer",
-          onPressed: () {
-            setState(() {
-              todos = allDeletedTodos;
-              allDeletedTodos.clear;
-            });
-          },
-          textColor: Color(0xff00d7f3),
-        ),
+    todoRepository.saveTodoList(todos);
+
+    ScaffoldMessenger.of(context).clearSnackBars();
+    final snack = SnackBar(
+      duration: Duration(seconds: 5),
+      content: Text(
+        "Todas as tarefas foram removidas com sucesso!",
+        style: TextStyle(color: Color(0xff060708)),
+      ),
+      backgroundColor: Colors.white,
+      action: SnackBarAction(
+        label: "Desfazer",
+        onPressed: () {
+          setState(() {
+            todos = List.from(allDeletedTodos);
+            allDeletedTodos.clear();
+            todoRepository.saveTodoList(todos);
+          });
+        },
+        textColor: Color(0xff00d7f3),
       ),
     );
+
+    final controller = ScaffoldMessenger.of(context).showSnackBar(snack);
+    Future.delayed(Duration(seconds: 5), () {
+      controller.close();
+      allDeletedTodos.clear();
+    });
+  }
+
+  void sendTodoInfo() {
+    String text = todoController.text;
+    setState(() {
+      Todo newTodo = Todo(title: text, dateTime: DateTime.now());
+      todos.add(newTodo);
+    });
+    todoController.clear();
+    todoRepository.saveTodoList(todos);
   }
 }
