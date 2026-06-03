@@ -2,9 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:lista_de_tarefas/models/todo.dart';
 import 'package:lista_de_tarefas/repositories/todo_repository.dart';
 import 'package:lista_de_tarefas/widgets/todo_list_item.dart';
+import 'package:lista_de_tarefas/widgets/theme_toggle_button.dart';
 
 class TodoListPage extends StatefulWidget {
-  const TodoListPage({super.key});
+  final bool isDark;
+  final VoidCallback onToggleTheme;
+
+  const TodoListPage({
+    super.key,
+    required this.isDark,
+    required this.onToggleTheme,
+  });
 
   @override
   State<TodoListPage> createState() => _TodoListPageState();
@@ -34,6 +42,17 @@ class _TodoListPageState extends State<TodoListPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: ThemeToggleButton(
+                isDark: widget.isDark,
+                onToggle: widget.onToggleTheme,
+              ),
+            ),
+          ],
+        ),
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(16),

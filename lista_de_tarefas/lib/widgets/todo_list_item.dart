@@ -31,8 +31,11 @@ class TodoListItem extends StatelessWidget {
         child: Container(
           width: double.infinity,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
-            color: Colors.grey[200],
+            borderRadius: BorderRadius.circular(8),
+            color: Theme.of(context).colorScheme.surfaceVariant,
+            border: Border.all(
+              color: Theme.of(context).dividerColor.withOpacity(0.08),
+            ),
           ),
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -40,11 +43,14 @@ class TodoListItem extends StatelessWidget {
             children: [
               Text(
                 DateFormat("dd/MM/yyyy - HH:mm").format(todo.dateTime),
-                style: TextStyle(fontSize: 12),
+                style: Theme.of(context).textTheme.bodySmall,
               ),
+              SizedBox(height: 6),
               Text(
                 todo.title,
-                style: TextStyle(fontSize: 16, fontWeight: .w600),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
               ),
             ],
           ),
